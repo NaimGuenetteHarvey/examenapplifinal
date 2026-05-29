@@ -1,0 +1,31 @@
+package ca.cem.formatif1.api
+
+import com.example.formatif2.GitHubApi
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import kotlin.apply
+import kotlin.jvm.java
+import retrofit2.converter.gson.GsonConverterFactory
+object RetrofitInstance {
+    private const val BASE_URL = "https://fourn6-mobile-prof.onrender.com/"
+
+    // Configuration du logging interceptor pour voir les requêtes/réponses HTTP
+    private val loggingInterceptor = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY
+    }
+
+    // Client OkHttp avec logging
+    private val okHttpClient = OkHttpClient.Builder()
+        .addInterceptor(loggingInterceptor)
+        .build()
+
+    private val retrofit = Retrofit.Builder()
+        .baseUrl(BASE_URL)
+        .client(okHttpClient)
+        .addConverterFactory(GsonConverterFactory.create()) // mettre GsonConverterFactory si besoin
+        .build()
+
+    val api: GitHubApi = retrofit.create(GitHubApi::class.java)
+}
